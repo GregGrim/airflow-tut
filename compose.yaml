@@ -1,0 +1,26 @@
+version: '3.9'
+
+networks:
+  my-playground:
+    external:
+      name: playground
+
+services:
+  webserver:
+    image: "puckel/docker-airflow:latest"
+    restart: always
+    networks:
+      - my-playground
+#    depends_on:
+#      - postgres
+    environment:
+      - LOAD_EX=n
+      - EXECUTOR=Local
+      - AIRFLOW__DATABASE__SQL_ALCHEMY_CONN=postgresql://myuser:mypassword@db:5432/fastapi_db
+#      - AIRFLOW__CELERY__RESULT_BACKEND=db+postgresql://myuser:mypassword@localhost:5432/fastapi_db
+    volumes:
+      - ./dags:/opt/airflow/dags
+      - ./logs:/opt/airflow/logs
+    ports:
+      - "8080:8080"
+    command: webserver
