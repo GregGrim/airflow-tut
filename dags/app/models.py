@@ -1,5 +1,6 @@
 import datetime as dt
 import sqlalchemy as sa
+from sqlalchemy import ForeignKey
 
 from sqlalchemy.orm import declarative_base
 
@@ -18,3 +19,14 @@ class UserModel(Base):
     email = sa.Column(sa.String, index=True, unique=True)
     phone_number = sa.Column(sa.String, index=True, unique=True)
     date_created = sa.Column(sa.DateTime, default=dt.datetime.utcnow())
+
+
+class LogModel(Base):
+    __tablename__ = "logs"
+    id = sa.Column(
+        sa.String, primary_key=True, server_default=sa.func.uuid_generate_v4()
+    )
+    user_id = sa.Column(ForeignKey("users.id"))
+    message = sa.Column(sa.String)
+    date_created = sa.Column(sa.DateTime, default=dt.datetime.utcnow())
+    ipv4 = sa.Column(sa.String)
